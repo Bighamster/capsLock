@@ -23,36 +23,19 @@ var capsLock = (function (status, observers, apple, on, done) {
         on("keypress", correctStatus);
     });
 
-    if (apple) {
-        on("keydown", function (event) {
-            var e = event || window.event;
-            if (e.keyCode === 20) setStatus(true);
-        });
+    var before = false;
 
-        on("keyup", function (event) {
-            var e = event || window.event;
-            if (e.keyCode === 20) setStatus(false);
-        });
-    } else {
-        var pressed = false;
+    on("keydown", function (event) {
+        var e = event || window.event;
 
-        on("keydown", function (event) {
-            var e = event || window.event;
+        if (e.keyCode === 20 && !(before = status)) setStatus(true);
+    });
 
-            if (!pressed && e.keyCode === 20) {
-                setStatus(!status);
-                pressed = true;
-            }
-        });
+    on("keyup", function (event) {
+        var e = event || window.event;
 
-        on("keyup", function (event) {
-            var e = event || window.event;
-            if (pressed && e.keyCode === 20) {
-                setStatus(!status);
-                pressed = false;
-            }
-        });
-    }
+        if (e.keyCode === 20 && before) setStatus(false);
+    });
 
     return capsLock;
 
